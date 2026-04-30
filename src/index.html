@@ -4,17 +4,67 @@
 	<meta charset="UTF-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Notes app</title>
+	<title>Vehicle Dashboard</title>
 	<link rel="stylesheet" href="main.css" />
 </head>
 <body>
-	<a href="about.html">About</a>
-	<br><br>
-	<h1 id="title">Hello, Tyler!</h1>
-	<br><br>
-	<input type="text" id="noteTitle" />
-	<input type="text" id="noteContent" />
-	<button id="noteSubmit">Submit Note</button>
+	<div class="dashboard">
+		<section class="gauge-panel">
+			<div
+				class="gauge speed-gauge"
+				data-max="160"
+				data-step="20"
+				data-minor="10"
+				data-unit-main="mph"
+				data-unit-sub="km/h"
+				data-sub-factor="1.609"
+			>
+				<div class="gauge-face">
+					<div class="gauge-ring"></div>
+					<div class="gauge-ticks"></div>
+					<div class="gauge-numbers"></div>
+					<div class="gauge-unit">mph</div>
+					<div class="gauge-needle" id="speedNeedle"></div>
+					<div class="gauge-center"></div>
+				</div>
+			</div>
+			<div class="gauge-meta">
+				<div class="gauge-label">SPEED</div>
+				<div class="gauge-value">
+					<span id="speedValue">0</span>
+					<span class="unit">MPH</span>
+				</div>
+			</div>
+		</section>
+
+		<section class="gauge-panel">
+			<div
+				class="gauge power-gauge"
+				data-max="500"
+				data-step="50"
+				data-minor="10"
+				data-unit-main="hp"
+				data-unit-sub="kW"
+				data-sub-factor="0.746"
+			>
+				<div class="gauge-face">
+					<div class="gauge-ring"></div>
+					<div class="gauge-ticks"></div>
+					<div class="gauge-numbers"></div>
+					<div class="gauge-unit">hp</div>
+					<div class="gauge-needle" id="powerNeedle"></div>
+					<div class="gauge-center"></div>
+				</div>
+			</div>
+			<div class="gauge-meta">
+				<div class="gauge-label">POWER</div>
+				<div class="gauge-value">
+					<span id="powerValue">0</span>
+					<span class="unit">HP</span>
+				</div>
+			</div>
+		</section>
+	</div>
 
 	<script src="script.js"></script>
 </body>

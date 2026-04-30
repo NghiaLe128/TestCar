@@ -2,10 +2,199 @@
 	margin: 0;
 	padding: 0;
 	box-sizing: border-box;
-	font-family: sans-serif;
+	font-family: "Inter", "Segoe UI", Arial, sans-serif;
 }
 
 body {
-	background-color: #f5f5f5;
-	padding: 1.5rem;
+	background:
+		radial-gradient(circle at 50% 38%, #1a2029 0%, #090b10 42%, #020304 74%),
+		linear-gradient(180deg, #06080d 0%, #030406 100%);
+	padding: 1.75rem 1rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	color: #fff;
+}
+
+.dashboard {
+	display: flex;
+	gap: clamp(2rem, 5vw, 4.8rem);
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	padding: 1rem 1.2rem;
+	border-radius: 24px;
+	background: radial-gradient(circle at 50% 45%, rgba(170, 196, 240, 0.06) 0%, rgba(8, 10, 14, 0.2) 42%, rgba(0, 0, 0, 0) 72%);
+}
+
+.gauge-panel {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 1rem;
+}
+
+.gauge {
+	position: relative;
+	width: min(42vw, 400px);
+	aspect-ratio: 1;
+	filter: drop-shadow(0 0 20px rgba(106, 126, 165, 0.18));
+}
+
+.gauge-face {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	border-radius: 50%;
+	background:
+		radial-gradient(circle at 50% 58%, rgba(12, 12, 12, 0.3) 0%, rgba(0, 0, 0, 0.95) 54%),
+		radial-gradient(circle at 50% 15%, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0.01) 32%, transparent 60%),
+		radial-gradient(circle, #111 0%, #040404 67%, #000 100%);
+	border: 4px solid #1d2230;
+	box-shadow:
+		inset 0 0 20px rgba(255, 255, 255, 0.08),
+		inset 0 -14px 18px rgba(0, 0, 0, 0.48),
+		0 0 32px rgba(120, 155, 220, 0.12);
+	overflow: hidden;
+}
+
+.gauge-ring {
+	position: absolute;
+	inset: 8%;
+	border-radius: 50%;
+	border: 2px solid rgba(220, 230, 255, 0.24);
+	box-shadow:
+		inset 0 0 8px rgba(255, 255, 255, 0.08),
+		0 0 10px rgba(160, 180, 230, 0.1);
+}
+
+.gauge-ticks,
+.gauge-numbers {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.tick {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 2px;
+	height: 14px;
+	transform-origin: 50% 50%;
+	transform: rotate(var(--angle)) translateY(calc(-1 * var(--tick-radius)));
+	background: #9db393;
+	opacity: 0.62;
+}
+
+.tick.major {
+	height: 20px;
+	width: 3px;
+	background: #f3f6ff;
+	opacity: 0.95;
+}
+
+.number {
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	color: #f4f7ff;
+	font-size: clamp(0.82rem, 1.25vw, 1.55rem);
+	font-weight: 600;
+	transform: rotate(var(--angle)) translateY(calc(-1 * var(--number-radius))) rotate(calc(-1 * var(--angle)));
+	text-shadow: 0 0 5px rgba(200, 220, 255, 0.16);
+	translate: -50% -50%;
+}
+
+.gauge-unit {
+	position: absolute;
+	top: 30%;
+	left: 50%;
+	transform: translateX(-50%);
+	color: #cfd8ea;
+	font-size: clamp(1rem, 1.1vw, 1.2rem);
+	letter-spacing: 0.6px;
+	text-transform: lowercase;
+	opacity: 0.95;
+}
+
+.gauge-needle {
+	position: absolute;
+	width: 11px;
+	height: 41%;
+	background: linear-gradient(to top, #bc1618 0%, #ff505f 72%, #ffd0d7 100%);
+	left: 50%;
+	top: 50%;
+	clip-path: polygon(50% 0, 73% 100%, 27% 100%);
+	transform-origin: 50% 100%;
+	transform: translate(-50%, -100%) rotate(-90deg);
+	transition: transform 0.35s ease-out;
+	box-shadow:
+		0 0 10px rgba(255, 70, 70, 0.5),
+		0 0 18px rgba(255, 58, 58, 0.2);
+	z-index: 10;
+}
+
+.gauge-center {
+	position: absolute;
+	width: 26px;
+	height: 26px;
+	background: radial-gradient(circle, #3d3d3d 0%, #1e1e1e 64%, #090909 100%);
+	border-radius: 50%;
+	left: 50%;
+	top: 50%;
+	transform: translate(-50%, -50%);
+	border: 2px solid #7f8798;
+	box-shadow:
+		0 0 10px rgba(210, 222, 248, 0.24),
+		inset 0 0 8px rgba(255, 255, 255, 0.12);
+	z-index: 11;
+}
+
+.gauge-meta {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 0.35rem;
+}
+
+.gauge-label {
+	color: #b7c3d8;
+	font-size: clamp(0.85rem, 1vw, 1rem);
+	font-weight: 600;
+	letter-spacing: 6px;
+	text-align: center;
+	text-shadow: 0 0 8px rgba(110, 130, 170, 0.28);
+}
+
+.gauge-value {
+	color: #f6f9ff;
+	font-family: "Bahnschrift", "Segoe UI", Arial, sans-serif;
+	font-size: clamp(1.6rem, 2vw, 2.2rem);
+	font-weight: 700;
+	text-align: center;
+	line-height: 1;
+	text-shadow: 0 0 8px rgba(208, 224, 255, 0.26);
+	letter-spacing: 0.6px;
+}
+
+.unit {
+	font-family: "Inter", "Segoe UI", Arial, sans-serif;
+	font-size: 0.52em;
+	color: #c8d3e8;
+	margin-left: 8px;
+	letter-spacing: 1.6px;
+	font-weight: 600;
+	opacity: 0.95;
+}
+
+@media (max-width: 840px) {
+	.dashboard {
+		gap: 1.5rem;
+	}
+
+	.gauge {
+		width: min(86vw, 360px);
+	}
 }
