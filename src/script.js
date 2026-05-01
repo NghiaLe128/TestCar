@@ -17,7 +17,7 @@ class GaugeController {
 	init() {
 		this.createScale(this.speedGauge);
 		this.createScale(this.powerGauge);
-		this.updateGauge(this.speedNeedle, 3.2, this.maxSpeed);
+		this.updateGauge(this.speedNeedle, 6, this.maxSpeed);
 		this.updateGauge(this.powerNeedle, 320, this.maxPower);
 	}
 
