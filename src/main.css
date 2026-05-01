@@ -95,6 +95,11 @@ body {
 	opacity: 0.95;
 }
 
+.speed-gauge .tick.danger {
+	background: #d83b3b;
+	opacity: 0.95;
+}
+
 .number {
 	position: absolute;
 	left: 50%;
@@ -109,14 +114,33 @@ body {
 
 .gauge-unit {
 	position: absolute;
-	top: 30%;
+	top: 36%;
 	left: 50%;
 	transform: translateX(-50%);
 	color: #cfd8ea;
-	font-size: clamp(1rem, 1.1vw, 1.2rem);
-	letter-spacing: 0.6px;
-	text-transform: lowercase;
+	font-size: clamp(0.86rem, 0.95vw, 1rem);
+	letter-spacing: 0.5px;
+	text-transform: none;
 	opacity: 0.95;
+}
+
+.speed-gauge .gauge-face::before {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 50%;
+	width: 58%;
+	aspect-ratio: 1;
+	transform: translate(-50%, -22%);
+	border-radius: 50%;
+	background:
+		radial-gradient(circle, rgba(20, 105, 255, 0.56) 0%, rgba(14, 75, 220, 0.4) 34%, rgba(9, 36, 106, 0.05) 68%, transparent 74%);
+	filter: blur(2px);
+	pointer-events: none;
+}
+
+.speed-gauge .number {
+	font-size: clamp(0.86rem, 1.28vw, 1.65rem);
 }
 
 .gauge-needle {
@@ -177,6 +201,10 @@ body {
 	line-height: 1;
 	text-shadow: 0 0 8px rgba(208, 224, 255, 0.26);
 	letter-spacing: 0.6px;
+}
+
+.speed-gauge + .gauge-meta .gauge-value {
+	font-size: clamp(1.5rem, 1.8vw, 2rem);
 }
 
 .unit {
