@@ -1,0 +1,4 @@
++ khi chỉnh các số khác nhau thì cây kim không hiện đúng vị trí (giả sử 7 thì không hiện đúng tại vị trí 7)
++ các giá trị nhận vào t sẽ gửi là dạng char và là các giá trị từ 0 đến 8000 (có thể lên đến 12000), coi chừng bị tràn số với kim xoay tùm lum.
++ nhớ lưu ý cái số khi hiển thị và tính toán để cho kim xoay nhé tại t thấy các số khi t thay đổi là đã chia 1000 rồi nên khi t thay đổi hoặc nhận vào nó sẽ là ban đầu chưa chia.
++ có một lỗi nhỏ là khi t thay đổi, tắt phần mềm rồi mở lại thì nó lại bị loạn số tùm lum nhưng khi reload lại thì lại bth, khó lói :))
