@@ -15,13 +15,18 @@
 				data-max="8"
 				data-step="1"
 				data-minor="0.1"
+				data-start-angle="-160"
+				data-end-angle="160"
+				data-needle-offset="2"
 			>
 				<div class="gauge-face">
 					<div class="gauge-ring"></div>
 					<div class="gauge-ticks"></div>
 					<div class="gauge-numbers"></div>
 					<div class="gauge-unit">x1000r/min</div>
-					<div class="gauge-needle" id="speedNeedle"></div>
+					<div class="gauge-needle-anchor" id="speedNeedle">
+						<div class="gauge-needle"></div>
+					</div>
 					<div class="gauge-center"></div>
 				</div>
 			</div>
@@ -40,6 +45,9 @@
 				data-max="500"
 				data-step="50"
 				data-minor="10"
+				data-start-angle="-140"
+				data-end-angle="140"
+				data-needle-offset="0"
 				data-unit-main="hp"
 				data-unit-sub="kW"
 				data-sub-factor="0.746"
@@ -49,7 +57,9 @@
 					<div class="gauge-ticks"></div>
 					<div class="gauge-numbers"></div>
 					<div class="gauge-unit">hp</div>
-					<div class="gauge-needle" id="powerNeedle"></div>
+					<div class="gauge-needle-anchor" id="powerNeedle">
+						<div class="gauge-needle"></div>
+					</div>
 					<div class="gauge-center"></div>
 				</div>
 			</div>
@@ -63,6 +73,6 @@
 		</section>
 	</div>
 
-	<script src="script.js"></script>
+	<script src="script.js?v=2"></script>
 </body>
 </html>
