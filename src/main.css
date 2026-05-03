@@ -81,15 +81,15 @@ body {
 	left: 50%;
 	top: 50%;
 	width: 2px;
-	height: 14px;
+	height: 15px;
 	transform-origin: 50% 50%;
 	transform: rotate(var(--angle)) translateY(calc(-1 * var(--tick-radius)));
 	background: #9db393;
-	opacity: 0.62;
+	opacity: 0.68;
 }
 
 .tick.major {
-	height: 20px;
+	height: 23px;
 	width: 3px;
 	background: #f3f6ff;
 	opacity: 0.95;
@@ -143,21 +143,41 @@ body {
 	font-size: clamp(0.86rem, 1.28vw, 1.65rem);
 }
 
-.gauge-needle {
+.gauge-needle-anchor {
 	position: absolute;
-	width: 11px;
-	height: 41%;
-	background: linear-gradient(to top, #bc1618 0%, #ff505f 72%, #ffd0d7 100%);
+	width: 0;
+	height: var(--needle-length, 46%);
 	left: 50%;
 	top: 50%;
-	clip-path: polygon(50% 0, 73% 100%, 27% 100%);
 	transform-origin: 50% 100%;
-	transform: translate(-50%, -100%) rotate(-90deg);
+	transform: translate(-50%, -100%) rotate(var(--needle-angle, 0deg));
 	transition: transform 0.35s ease-out;
+	z-index: 10;
+}
+
+.gauge-needle {
+	position: absolute;
+	left: -3.5px;
+	bottom: 0;
+	width: 7px;
+	height: 100%;
+	background: linear-gradient(to top, #bc1618 0%, #ff505f 72%, #ffd0d7 100%);
+	clip-path: polygon(50% 0, 70% 100%, 30% 100%);
 	box-shadow:
 		0 0 10px rgba(255, 70, 70, 0.5),
 		0 0 18px rgba(255, 58, 58, 0.2);
-	z-index: 10;
+}
+
+.gauge-needle::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	top: 6%;
+	width: 1px;
+	height: 84%;
+	transform: translateX(-50%);
+	background: rgba(255, 238, 238, 0.85);
+	box-shadow: 0 0 2px rgba(255, 235, 235, 0.6);
 }
 
 .gauge-center {
