@@ -8,5 +8,4 @@
 + Đừng cho kim nhảy lung tung.
 + Vẫn còn lỗi hiển thị kim không đúng vị trí nha.
 + Cho rpm lên 12000 nha.
-+ Không thấy file build đâu cả.
 + Còn lại ok gòi.
