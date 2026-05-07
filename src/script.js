@@ -24,14 +24,15 @@ class GaugeController {
 	init() {
 		this.syncGaugeGeometry();
 		this.restoreState();
-		const initialRpm = this.state.rpm > 0 ? this.state.rpm : 6000;
+		// Set fixed values instead of random simulation
 		this.setValues({
-			rpm: initialRpm,
-			power: this.state.power ?? 0
+			rpm: 0,
+			power: 0
 		}, false);
 		this.attachResizeSync();
 		this.registerApi();
-		this.startRandomSimulation();
+		// Remove random simulation to prevent needle jumping
+		// this.startRandomSimulation();
 	}
 
 	syncGaugeGeometry() {
