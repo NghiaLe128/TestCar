@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>DYNO Dashboard</title>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Arial:wght@400;700&display=swap" rel="stylesheet">
+	<style>
+		@font-face {
+			font-family: 'DS-Digital';
+			src: url('https://cdn.jsdelivr.net/gh/keshikan/DSEG@master/fonts/DSEG7-Classic/DSEG7Classic-Regular.woff2') format('woff2');
+			font-weight: normal;
+			font-style: normal;
+		}
+
+		* {
+			margin: 0;
+			padding: 0;
+			box-sizing: border-box;
+		}
+
+		body {
+			font-family: Arial, Helvetica, sans-serif;
+			background: #ececec;
+			min-height: 100vh;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			padding: 12px;
+		}
+
+		.dyno-app {
+			background: #f0f0f0;
+			border: 1px solid #c8c8c8;
+			padding: 18px 22px 28px;
+			width: 100%;
+			max-width: 980px;
+			position: relative;
+			box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+		}
+
+		.dyno-main {
+			display: flex;
+			gap: 18px;
+			align-items: flex-start;
+		}
+
+		/* —— Left: RPM gauge —— */
+		.gauge-column {
+			flex: 0 0 380px;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+		.gauge-wrap {
+			position: relative;
+			width: 360px;
+			height: 360px;
+		}
+
+		.gauge-wrap svg {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+
+		.gauge-digital {
+			position: absolute;
+			left: 50%;
+			bottom: 72px;
+			transform: translateX(-50%);
+			display: flex;
+			align-items: center;
+			gap: 6px;
+		}
+
+		.digital-box {
+			background: #c4c4c4;
+			border: 2px solid #1a1a1a;
+			padding: 2px 10px 2px 8px;
+			min-width: 88px;
+			text-align: center;
+		}
+
+		.digital-box span {
+			font-family: 'DS-Digital', 'Courier New', monospace;
+			font-size: 28px;
+			color: #c8102e;
+			letter-spacing: 2px;
+			font-weight: bold;
+		}
+
+		.digital-unit {
+			font-size: 22px;
+			font-weight: bold;
+			color: #c8102e;
+		}
+
+		.gauge-title {
+			margin-top: 6px;
+			font-size: 26px;
+			font-weight: bold;
+			color: #c8102e;
+			text-align: center;
+		}
+
+		.dyno-version {
+			position: absolute;
+			left: 22px;
+			bottom: 10px;
+			font-size: 13px;
+			font-weight: bold;
+			color: #c8102e;
+		}
+
+		/* —— Right: charts —— */
+		.charts-column {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			min-width: 0;
+		}
+
+		.chart-panel {
+			background: #fff;
+			border: 2px solid #a8a8a8;
+			border-radius: 10px;
+			padding: 6px 10px 8px;
+			position: relative;
+			height: 168px;
+		}
+
+		.chart-panel h2 {
+			text-align: center;
+			font-size: 20px;
+			font-weight: bold;
+			color: #c8102e;
+			margin-bottom: 2px;
+		}
+
+		.chart-readout {
+			position: absolute;
+			top: 28px;
+			right: 14px;
+			background: #c4c4c4;
+			border: 2px solid #1a1a1a;
+			padding: 1px 8px;
+			z-index: 2;
+		}
+
+		.chart-readout span {
+			font-family: 'DS-Digital', 'Courier New', monospace;
+			font-size: 22px;
+			color: #c8102e;
+			font-weight: bold;
+			letter-spacing: 1px;
+		}
+
+		.chart-canvas-wrap {
+			position: relative;
+			height: calc(100% - 28px);
+		}
+
+		.chart-canvas-wrap canvas {
+			width: 100%;
+			height: 100%;
+			display: block;
+		}
+	</style>
+</head>
+<body>
+	<div class="dyno-app">
+		<div class="dyno-main">
+			<div class="gauge-column">
+				<div class="gauge-wrap">
+					<svg viewBox="0 0 360 360" xmlns="http://www.w3.org/2000/svg" aria-label="Tốc độ động cơ">
+						<defs>
+							<filter id="needleShadow" x="-20%" y="-20%" width="140%" height="140%">
+								<feDropShadow dx="0" dy="1" stdDeviation="1" flood-opacity="0.25"/>
+							</filter>
+						</defs>
+						<!-- outer ring -->
+						<circle cx="180" cy="180" r="168" fill="#fff" stroke="#111" stroke-width="3"/>
+						<!-- light blue face -->
+						<circle cx="180" cy="180" r="138" fill="#dceaf8"/>
+						<!-- inner white ring -->
+						<circle cx="180" cy="180" r="138" fill="none" stroke="#fff" stroke-width="14"/>
+						<circle cx="180" cy="180" r="131" fill="#dceaf8"/>
+
+						<g id="gaugeTicks"></g>
+						<g id="gaugeLabels"></g>
+
+						<g id="gaugeNeedle" filter="url(#needleShadow)" transform="rotate(0 180 180)">
+							<polygon points="180,58 173,178 187,178" fill="#1a6fd4"/>
+						</g>
+						<circle cx="180" cy="180" r="14" fill="#5ec8e8" stroke="#2a8ab8" stroke-width="2"/>
+						<circle cx="180" cy="180" r="6" fill="#1a6fd4"/>
+					</svg>
+					<div class="gauge-digital">
+						<div class="digital-box"><span>3600</span></div>
+						<span class="digital-unit">RPM</span>
+					</div>
+				</div>
+				<div class="gauge-title">Tốc độ động cơ</div>
+			</div>
+
+			<div class="charts-column">
+				<div class="chart-panel">
+					<h2>Tốc độ xe</h2>
+					<div class="chart-readout"><span>56</span></div>
+					<div class="chart-canvas-wrap">
+						<canvas id="chartSpeed"></canvas>
+					</div>
+				</div>
+				<div class="chart-panel">
+					<h2>Công suất</h2>
+					<div class="chart-readout"><span>12</span></div>
+					<div class="chart-canvas-wrap">
+						<canvas id="chartPower"></canvas>
+					</div>
+				</div>
+				<div class="chart-panel">
+					<h2>Tiêu hao nhiên liệu</h2>
+					<div class="chart-readout"><span>48.5</span></div>
+					<div class="chart-canvas-wrap">
+						<canvas id="chartFuel"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="dyno-version">DYNO_VER1</div>
+	</div>
+
+	<script>
+		(function buildGauge() {
+			const cx = 180, cy = 180, rTickMajor = 148, rTickMinor = 152;
+			const rLabel = 158;
+			/* 0 ≈ 8h (trái dưới), 6 trên đỉnh, 12 ≈ 4h (phải) — tăng theo chiều kim đồng hồ */
+			const startDeg = 240;
+			const sweepDeg = 240;
+			const maxVal = 12;
+			const needleValue = 4;
+
+			const ticksG = document.getElementById('gaugeTicks');
+			const labelsG = document.getElementById('gaugeLabels');
+
+			function valueToDeg(v) {
+				return startDeg + (v / maxVal) * sweepDeg;
+			}
+
+			function polar(deg, r) {
+				const rad = (deg - 90) * Math.PI / 180;
+				return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+			}
+
+			document.getElementById('gaugeNeedle').setAttribute(
+				'transform',
+				`rotate(${valueToDeg(needleValue)} ${cx} ${cy})`
+			);
+
+			for (let i = 0; i <= 120; i++) {
+				const v = i / 10;
+				const deg = valueToDeg(v);
+				const isMajor = i % 10 === 0;
+				const r1 = isMajor ? rTickMajor : rTickMinor;
+				const r2 = isMajor ? rTickMajor - 12 : rTickMinor - 7;
+				const p1 = polar(deg, r1);
+				const p2 = polar(deg, r2);
+				const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+				line.setAttribute('x1', p1.x);
+				line.setAttribute('y1', p1.y);
+				line.setAttribute('x2', p2.x);
+				line.setAttribute('y2', p2.y);
+				line.setAttribute('stroke', '#111');
+				line.setAttribute('stroke-width', isMajor ? 2 : 1);
+				ticksG.appendChild(line);
+			}
+
+			for (let n = 0; n <= 12; n++) {
+				const deg = valueToDeg(n);
+				const p = polar(deg, rLabel);
+				const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+				t.setAttribute('x', p.x);
+				t.setAttribute('y', p.y);
+				t.setAttribute('text-anchor', 'middle');
+				t.setAttribute('dominant-baseline', 'middle');
+				t.setAttribute('fill', '#c8102e');
+				t.setAttribute('font-size', '18');
+				t.setAttribute('font-weight', 'bold');
+				t.setAttribute('font-family', 'Arial, sans-serif');
+				t.textContent = String(n);
+				labelsG.appendChild(t);
+			}
+		})();
+
+		function drawChart(canvas, config) {
+			const dpr = window.devicePixelRatio || 1;
+			const rect = canvas.parentElement.getBoundingClientRect();
+			canvas.width = rect.width * dpr;
+			canvas.height = rect.height * dpr;
+			const ctx = canvas.getContext('2d');
+			ctx.scale(dpr, dpr);
+			const W = rect.width;
+			const H = rect.height;
+
+			const padL = 42;
+			const padR = 36;
+			const padT = 8;
+			const padB = 28;
+			const plotW = W - padL - padR;
+			const plotH = H - padT - padB;
+
+			ctx.fillStyle = '#fff';
+			ctx.fillRect(0, 0, W, H);
+
+			const yMin = config.yMin;
+			const yMax = config.yMax;
+			const xMin = 10;
+			const xMax = 14;
+
+			function xPos(t) {
+				return padL + ((t - xMin) / (xMax - xMin)) * plotW;
+			}
+			function yPos(v) {
+				return padT + plotH - ((v - yMin) / (yMax - yMin)) * plotH;
+			}
+
+			// grid
+			ctx.strokeStyle = '#d8d8d8';
+			ctx.lineWidth = 0.5;
+			config.yTicks.forEach(v => {
+				const y = yPos(v);
+				ctx.beginPath();
+				ctx.moveTo(padL, y);
+				ctx.lineTo(padL + plotW, y);
+				ctx.stroke();
+			});
+			for (let t = xMin; t <= xMax; t++) {
+				const x = xPos(t);
+				ctx.beginPath();
+				ctx.moveTo(x, padT);
+				ctx.lineTo(x, padT + plotH);
+				ctx.stroke();
+			}
+
+			// axes
+			ctx.strokeStyle = '#333';
+			ctx.lineWidth = 1;
+			ctx.beginPath();
+			ctx.moveTo(padL, padT);
+			ctx.lineTo(padL, padT + plotH);
+			ctx.lineTo(padL + plotW, padT + plotH);
+			ctx.stroke();
+
+			// Y labels + unit
+			ctx.fillStyle = '#0056b3';
+			ctx.font = 'bold 11px Arial';
+			ctx.textAlign = 'right';
+			config.yTicks.forEach(v => {
+				ctx.fillText(String(v), padL - 6, yPos(v) + 4);
+			});
+			ctx.save();
+			ctx.translate(10, padT + plotH / 2);
+			ctx.rotate(-Math.PI / 2);
+			ctx.textAlign = 'center';
+			ctx.fillText(config.yUnit, 0, 0);
+			ctx.restore();
+
+			// X labels
+			ctx.textAlign = 'center';
+			for (let t = xMin; t <= xMax; t++) {
+				ctx.fillText(String(t), xPos(t), padT + plotH + 16);
+			}
+			// t (s): phía trên, cuối trục hoành (bên phải)
+			ctx.textAlign = 'left';
+			ctx.textBaseline = 'bottom';
+			ctx.fillText('t (s)', padL + plotW + 4, padT + plotH - 4);
+			ctx.textBaseline = 'alphabetic';
+
+			// wavy data line
+			const points = [];
+			const base = config.value;
+			for (let t = xMin; t <= xMax; t += 0.05) {
+				const wobble = Math.sin(t * 14) * config.wobble + Math.sin(t * 31) * (config.wobble * 0.4);
+				points.push({ t, v: base + wobble });
+			}
+			ctx.strokeStyle = config.lineColor;
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			points.forEach((p, i) => {
+				const x = xPos(p.t);
+				const y = yPos(p.v);
+				if (i === 0) ctx.moveTo(x, y);
+				else ctx.lineTo(x, y);
+			});
+			ctx.stroke();
+		}
+
+		const charts = [
+			{
+				id: 'chartSpeed',
+				yMin: 0, yMax: 120, yTicks: [0, 20, 40, 60, 80, 100, 120],
+				yUnit: 'Km/h', value: 56, lineColor: '#d04078', wobble: 1.2
+			},
+			{
+				id: 'chartPower',
+				yMin: 0, yMax: 60, yTicks: [0, 10, 20, 30, 40, 50, 60],
+				yUnit: 'HP', value: 12, lineColor: '#1a6fd4', wobble: 0.35
+			},
+			{
+				id: 'chartFuel',
+				yMin: 0, yMax: 100, yTicks: [0, 50, 100],
+				yUnit: 'km/lít', value: 48.5, lineColor: '#c8102e', wobble: 0.8
+			}
+		];
+
+		function redrawAll() {
+			charts.forEach(c => drawChart(document.getElementById(c.id), c));
+		}
+
+		redrawAll();
+		window.addEventListener('resize', redrawAll);
+	</script>
+</body>
+</html>
