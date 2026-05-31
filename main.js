@@ -4,8 +4,8 @@ const fs = require('fs');
 
 function createWindow () {
 	const win = new BrowserWindow({
-		width: 768,
-		height: 560,
+		width: 1024,
+		height: 720,
 		webPreferences: {
 			preload: path.join(__dirname, 'preload.js')
 		}
@@ -20,7 +20,7 @@ function createWindow () {
 		return { success: true, filePath };
 	})
 
-	win.loadFile('src/index.html');
+	win.loadFile('src/dyno-dashboard.html');
 }
 
 app.whenReady().then(createWindow);
